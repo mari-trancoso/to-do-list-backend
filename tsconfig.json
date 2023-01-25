@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+      "target": "ES6",
+      "module": "commonjs",   
+      "sourceMap": true,       
+      "outDir": "./build", //pasta de saída da transpilação, fica os arquivos js      
+      "rootDir": "./src", // fica os arquivos de typescript     
+      "removeComments": true,   
+      "noImplicitAny": true, //quando não tipa vem any     
+      "esModuleInterop": true, 
+      "noEmitOnError": true,
+      "strict": true //garantir a tipagem
+  }
+}
