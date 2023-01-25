@@ -9,7 +9,7 @@ export const db = knex({
     pool: {
         min: 0, // número de conexões, esses valores são os recomendados para sqlite3
         max: 1,
-				afterCreate: (conn: any, cb: any) => {
+			afterCreate: (conn: any, cb: any) => {
             conn.run("PRAGMA foreign_keys = ON", cb)
         } // configurando para o knex forçar o check das constrainst FK
 					// para entender melhor, depois assista o vídeo de refatoração de DELETE users by id
