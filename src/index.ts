@@ -164,3 +164,33 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
         }
     }
 })
+
+//GET ALL TASKS
+app.get("/tasks", async (req: Request, res: Response) => {
+    try {
+        const searchTerm = req.query.q as string | undefined
+
+        if(searchTerm === undefined){
+            const result = await db("tasks")
+            res.status(200).send(result)
+        }else{
+            const resultSearchTerm = await db("tasks")
+            .where("title", "LIKE", `%${searchTerm}%`)
+            .orWhere("description", "LIKE", `%${searchTerm}%`)
+            res.status(200).send(resultSearchTerm)
+        }
+		
+    } catch (error) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
+            res.status(500)
+        }
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
+    }
+})
