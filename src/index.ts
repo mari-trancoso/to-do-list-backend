@@ -490,3 +490,59 @@ app.delete("/tasks/:taskId/users/:userId", async (req: Request, res: Response) =
         }
     }
 })
+
+//GET tarefas com os usuários responsáveis
+app.get("/tasks/users", async (req: Request, res: Response) => {
+    try {
+        // const result = await db("tasks")
+        //     .select(
+        //         "tasks.id AS taskId",
+        //         "title",
+        //         "description",
+        //         "created_at AS createdAt",
+        //         "status",
+        //         "user_id AS userId",
+        //         "name",
+        //         "email",
+        //         "password"
+        //     )
+        //     .leftJoin("users_tasks", "users_tasks.task_id", "=", "tasks.id")
+        //     .leftJoin("users", "users_tasks.user_id", "=", "users.id")
+
+        const tasks: TTaskDB[] = await db("tasks")
+
+        const result = []
+
+        for (let task of tasks) {
+            const responsibles = []
+            const users_tasks: TUserTaskDB[] = await db("users_tasks").where({ task_id: task.id })
+            
+            for (let user_task of users_tasks) {
+                const [ user ] = await db("users").where({ id: user_task.user_id })
+                responsibles.push(user)
+            }
+
+            const newTaskWithUsers = {
+                ...task,
+                responsibles
+            }
+
+            result.push(newTaskWithUsers)
+        }
+
+        res.status(200).send(result)
+		
+    } catch (error) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
+            res.status(500)
+        }
+
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
+    }
+})
